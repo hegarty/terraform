@@ -23,7 +23,7 @@ resource "aws_vpc" "this" {
 }
 
 resource "aws_subnet" "this" {
-  for_each = { for v in var.subnets : "${v.use}_${v.availability_zone_id}" => v }
+  for_each = { for v in var.subnets : "${v.tags.use}_${v.availability_zone_id}" => v }
 
   vpc_id               = aws_vpc.this.id
   cidr_block           = each.value.cidr

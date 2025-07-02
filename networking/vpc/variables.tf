@@ -27,8 +27,6 @@ variable "environment" {
 
 variable "subnets" {
   type = list(object({
-    use                  = string
-    type                 = string
     availability_zone_id = string
     cidr                 = string
     tags                 = map(string)
