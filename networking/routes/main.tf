@@ -1,19 +1,26 @@
-resource "aws_route_table" "r" {
-  vpc_id = aws_vpc.default.id
+resource "aws_route_table" "this" {
+  for_each = var.subnets
+  vpc_id   = var.vpc_id
 
   tags = {
-    Name = "main"
+    Name = "${var.route-table_prefix}_${each.key}"
+    AZ   = each.key
   }
 }
 
-resource "aws_route_table_association" "a" {
-  subnet_id      = aws_subnet.foo.id
-  route_table_id = aws_route_table.bar.id
+resource "aws_route_table_association" "this" {
+  for_each       = var.subnets
+  subnet_id      = each.value
+  route_table_id = aws_route_table.this[each.key].id
 }
 
-resource "aws_route" "r" {
-  route_table_id            = "rtb-4fbb3ac4"
-  destination_cidr_block    = "10.0.1.0/22"
-  vpc_peering_connection_id = "pcx-45ff3dc1"
-  depends_on                = [aws_route_table.testing]
+resource "aws_route" "this" {
+  for_each               = var.subnets
+  route_table_id         = aws_route_table.this[each.key].id
+  destination_cidr_block = var.destination_cidr
+
+  gateway_id     = var.gateway_id
+  nat_gateway_id = contains(keys(var.nat_ids), each.key) ? var.nat_ids[each.key] : null
+
+  depends_on = [aws_route_table.this]
 }
