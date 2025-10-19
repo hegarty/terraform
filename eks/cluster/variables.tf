@@ -1,3 +1,7 @@
+variable "environment" {
+  type = string
+}
+
 variable "cluster_name" {
   type = string
 }
@@ -11,25 +15,29 @@ variable "vpc_id" {
 }
 
 variable "subnet_ids" {
-  type = list(any)
+  type = map(string)
 }
 
-variable "ingress_rules" {
-  type = list(object({
-    from_port   = number
-    to_port     = number
-    protocol    = string
-    cidr_blocks = list(string)
-    description = string
-  }))
+variable "security_groups" {
+  type = list(string)
 }
 
-variable "egress_rules" {
-  type = list(object({
-    from_port   = number
-    to_port     = number
-    protocol    = string
-    cidr_blocks = list(string)
-    description = string
-  }))
+variable "endpoint_public_access" {
+  type = bool
+}
+
+variable "endpoint_private_access" {
+  type = bool
+}
+
+variable "public_access_cidrs" {
+  type = list
+}
+
+variable "authentication_mode" {
+  type = string
+}
+
+variable "bootstrap_cluster_creator_admin_permissions" {
+  type = bool
 }

@@ -21,3 +21,7 @@ output "cluster_auth" {
   value     = data.aws_eks_cluster_auth.this.token
   sensitive = true
 }
+
+output "oidc_issuer" {
+  value = aws_eks_cluster.this.identity[0].oidc[0].issuer
+}

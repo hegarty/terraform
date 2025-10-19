@@ -2,6 +2,10 @@ output "vpc_id" {
   value = aws_vpc.this.id
 }
 
+output "vpc_cidr" {
+  value = aws_vpc.this.cidr_block
+}
+
 output "public_subnets" {
   value = { for k, v in aws_subnet.this : v.availability_zone_id => v.id if v.tags.type == "public" }
 }
