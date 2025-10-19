@@ -1,19 +1,25 @@
 variable "role_name" {
-    type = string
+  type = string
 }
 
 variable "assume_role_policy" {
-    type = string
+  type = string
 }
 
 variable "policy_name" {
-    type = string
+  type = string
 }
 
 variable "policy_description" {
-    type = string
+  type = string
 }
 
 variable "policy" {
-    type = string
+  type    = string
+  default = null
+}
+
+variable "aws_managed_policies" {
+  type    = list(any)
+  default = []
 }
