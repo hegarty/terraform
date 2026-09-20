@@ -25,3 +25,8 @@ variable "egress_rules" {
     description = string
   }))
 }
+
+variable "tags" {
+  type    = map(string)
+  default = {}
+}

@@ -26,6 +26,8 @@ resource "aws_security_group" "this" {
     }
   }
 
+  tags = merge({ Name = "${var.sg_prefix}-sec-grp" }, var.tags)
+
   lifecycle {
     create_before_destroy = true
   }

@@ -6,16 +6,6 @@ data "aws_eks_cluster_auth" "this" {
   name = var.cluster_name
 }
 
-terraform {
-  required_providers {
-    helm = {
-      source  = "hashicorp/helm"
-      version = "~> 2.12"   # any recent 2.x is fine
-    }
-  }
-}
-
-
 provider "kubernetes" {
   host                   = data.aws_eks_cluster.this.endpoint
   cluster_ca_certificate = base64decode(data.aws_eks_cluster.this.certificate_authority[0].data)
@@ -30,20 +20,18 @@ provider "helm" {
   }
 }
 
-# main.tf (only the important part)
-resource "helm_release" "ccm" {
-  name       = "aws-cloud-controller-manager"
+resource "helm_release" "this" {
+  name       = var.release_name
   namespace  = var.namespace
-  repository = "https://kubernetes.github.io/cloud-provider-aws"
-  chart      = "aws-cloud-controller-manager"
+  repository = var.repository
+  chart      = var.chart
   version    = var.chart_version
 
-  create_namespace = false
+  create_namespace = var.create_namespace
   atomic           = true
   wait             = true
-  timeout          = 600
+  timeout          = var.timeout_seconds
 
   # all values come from Terragrunt
   values = [yamlencode(var.helm_values)]
-
 }

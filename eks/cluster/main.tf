@@ -22,7 +22,7 @@ resource "aws_eks_cluster" "this" {
     # bootstrap_cluster_creator_admin_permissions = false
   }
 
-  enabled_cluster_log_types = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
+  enabled_cluster_log_types = var.enabled_cluster_log_types
 
   tags = {
     Environment = var.environment

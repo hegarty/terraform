@@ -17,7 +17,7 @@ resource "kubernetes_storage_class_v1" "gp3" {
       "storageclass.kubernetes.io/is-default-class" = "true"
     }
   }
-  provisioner         = "ebs.csi.aws.com"
+  storage_provisioner = "ebs.csi.aws.com"
   volume_binding_mode = "WaitForFirstConsumer"
   reclaim_policy      = "Delete"
   parameters = {
