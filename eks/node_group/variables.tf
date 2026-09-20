@@ -27,7 +27,7 @@ variable "block_device_mappings" {
 
 variable "metadata_options" {
   type = list(object({
-    http_tokens = string
+    http_tokens                 = string
     http_put_response_hop_limit = string
   }))
 }

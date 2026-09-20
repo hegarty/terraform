@@ -4,7 +4,7 @@ locals {
 }
 
 resource "aws_launch_template" "this" {
-  name_prefix = "${var.name}-lt-"
+  name_prefix            = "${var.name}-lt-"
   update_default_version = true
 
   dynamic "block_device_mappings" {
@@ -23,7 +23,7 @@ resource "aws_launch_template" "this" {
   dynamic "metadata_options" {
     for_each = var.metadata_options
     content {
-      http_tokens = metadata_options.value.http_tokens
+      http_tokens                 = metadata_options.value.http_tokens
       http_put_response_hop_limit = metadata_options.value.http_put_response_hop_limit
     }
   }
@@ -49,9 +49,9 @@ resource "aws_eks_node_group" "this" {
   node_role_arn   = var.node_role_arn
   subnet_ids      = values(local.filtered_subnets)
 
-  ami_type        = var.ami_type
-  capacity_type   = var.capacity_type #"ON_DEMAND"
-  instance_types  = var.instance_types
+  ami_type       = var.ami_type
+  capacity_type  = var.capacity_type #"ON_DEMAND"
+  instance_types = var.instance_types
 
   scaling_config {
     desired_size = var.scaling_desired_size
