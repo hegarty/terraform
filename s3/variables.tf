@@ -20,3 +20,25 @@ variable "tags" {
   default     = {}
   description = "Tags to apply to all resources"
 }
+
+variable "lifecycle_rules" {
+  description = <<-EOT
+    Optional lifecycle rules. Each entry:
+      id              = string, rule name
+      enabled         = bool
+      prefix          = optional string, defaults to whole bucket
+      transitions     = optional list of { days = number, storage_class = string }
+      expiration_days = optional number
+  EOT
+  type = list(object({
+    id      = string
+    enabled = bool
+    prefix  = optional(string)
+    transitions = optional(list(object({
+      days          = number
+      storage_class = string
+    })), [])
+    expiration_days = optional(number)
+  }))
+  default = []
+}

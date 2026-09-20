@@ -31,7 +31,7 @@ variable "endpoint_private_access" {
 }
 
 variable "public_access_cidrs" {
-  type = list
+  type = list(any)
 }
 
 variable "authentication_mode" {
@@ -40,4 +40,10 @@ variable "authentication_mode" {
 
 variable "bootstrap_cluster_creator_admin_permissions" {
   type = bool
+}
+
+variable "enabled_cluster_log_types" {
+  description = "Control plane log types to ship to CloudWatch Logs. Each type adds ingestion cost — keep this list short on cost-sensitive clusters."
+  type        = list(string)
+  default     = ["api", "audit"]
 }

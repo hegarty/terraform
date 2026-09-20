@@ -30,3 +30,35 @@ resource "aws_s3_bucket_public_access_block" "this" {
   ignore_public_acls      = true
   restrict_public_buckets = true
 }
+
+resource "aws_s3_bucket_lifecycle_configuration" "this" {
+  count  = length(var.lifecycle_rules) > 0 ? 1 : 0
+  bucket = aws_s3_bucket.this.id
+
+  dynamic "rule" {
+    for_each = var.lifecycle_rules
+    content {
+      id     = rule.value.id
+      status = rule.value.enabled ? "Enabled" : "Disabled"
+
+      filter {
+        prefix = lookup(rule.value, "prefix", null)
+      }
+
+      dynamic "transition" {
+        for_each = lookup(rule.value, "transitions", [])
+        content {
+          days          = transition.value.days
+          storage_class = transition.value.storage_class
+        }
+      }
+
+      dynamic "expiration" {
+        for_each = lookup(rule.value, "expiration_days", null) != null ? [1] : []
+        content {
+          days = rule.value.expiration_days
+        }
+      }
+    }
+  }
+}
