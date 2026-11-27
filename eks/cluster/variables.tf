@@ -47,3 +47,16 @@ variable "enabled_cluster_log_types" {
   type        = list(string)
   default     = ["api", "audit"]
 }
+
+variable "cluster_security_group_tags" {
+  description = <<-EOT
+    Extra tags to apply to the cluster's auto-created security group
+    (vpc_config.cluster_security_group_id). AWS creates this SG as a side
+    effect of the cluster itself, with a self-referencing allow-all rule —
+    anything that should share that connectivity (e.g. Karpenter nodes,
+    via an EC2NodeClass securityGroupSelectorTerms tag match) needs to be
+    tagged onto it explicitly; it is not picked up automatically.
+  EOT
+  type        = map(string)
+  default     = {}
+}

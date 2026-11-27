@@ -28,3 +28,14 @@ resource "aws_eks_cluster" "this" {
     Environment = var.environment
   }
 }
+
+# The cluster's security group (vpc_config.cluster_security_group_id) is
+# created automatically by EKS, not as a resource this module declares -
+# so it can't be tagged via `aws_eks_cluster.this.tags`. aws_ec2_tag lets
+# Terraform manage individual tags on a resource it doesn't otherwise own.
+resource "aws_ec2_tag" "cluster_security_group" {
+  for_each    = var.cluster_security_group_tags
+  resource_id = aws_eks_cluster.this.vpc_config[0].cluster_security_group_id
+  key         = each.key
+  value       = each.value
+}
