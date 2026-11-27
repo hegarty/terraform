@@ -12,7 +12,8 @@ variable "addon_version" {
 }
 
 variable "service_role_arn" {
-  type = string
+  type    = string
+  default = null # not every add-on needs its own IAM identity - e.g. eks-pod-identity-agent
 }
 
 variable "resolve_conflicts_on_update" {
