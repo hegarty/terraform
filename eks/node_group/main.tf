@@ -44,10 +44,10 @@ resource "aws_launch_template" "this" {
 }
 
 resource "aws_eks_node_group" "this" {
-  cluster_name    = var.cluster_name
-  node_group_name = "${var.name}-node-group"
-  node_role_arn   = var.node_role_arn
-  subnet_ids      = values(local.filtered_subnets)
+  cluster_name           = var.cluster_name
+  node_group_name_prefix = "${var.name}-node-group-"
+  node_role_arn          = var.node_role_arn
+  subnet_ids             = values(local.filtered_subnets)
 
   ami_type       = var.ami_type
   capacity_type  = var.capacity_type #"ON_DEMAND"
@@ -68,4 +68,11 @@ resource "aws_eks_node_group" "this" {
     "Name" = "${var.name}-node-group"
   }
 
+  # The replacement node must exist and join before the old one is torn
+  # down - this cluster has no other nodes to absorb a gap. Requires
+  # node_group_name_prefix above (a fixed name would collide during the
+  # create-before-destroy overlap).
+  lifecycle {
+    create_before_destroy = true
+  }
 }
