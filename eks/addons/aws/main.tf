@@ -5,7 +5,7 @@ resource "aws_eks_addon" "this" {
   service_account_role_arn    = var.service_role_arn
   resolve_conflicts_on_update = var.resolve_conflicts_on_update
 
-  configuration_values        = var.configuration_values
+  configuration_values = var.configuration_values
 
   tags = var.tags
 }

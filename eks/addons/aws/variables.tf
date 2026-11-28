@@ -7,7 +7,7 @@ variable "addon_name" {
 }
 
 variable "addon_version" {
-  type = string
+  type    = string
   default = null
 }
 
@@ -21,7 +21,7 @@ variable "resolve_conflicts_on_update" {
 }
 
 variable "configuration_values" {
-  type = string
+  type    = string
   default = null
 }
 

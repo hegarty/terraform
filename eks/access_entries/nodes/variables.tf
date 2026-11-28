@@ -15,11 +15,11 @@ variable "access_scope_type" {
 }
 
 variable "node_type" {
-  type = string
+  type    = string
   default = null
 }
 
 variable "kubernetes_groups" {
-  type = list
+  type    = list(any)
   default = []
 }
