@@ -25,6 +25,30 @@ provider "kubernetes" {
 #
 # Reclaim policy is always Retain: deleting the PVC (helm uninstall, a
 # namespace delete) or this PV object never deletes the EBS volume.
+#
+# Storage class: the PVs - and the PVCs that should bind to them - must use
+# a class that CANNOT dynamically provision (kubernetes.io/no-provisioner).
+# With a provisioning class (e.g. gp3), the scheduler can place the pod in
+# ANY zone via its "I'll provision a new volume there" path while the PV
+# controller simultaneously binds the PVC to the pre-bound PV in its own
+# zone - the pod then can't attach the volume (seen 2026-11-28: Prometheus
+# scheduled in us-east-1b, its volume in us-east-1a). With no provisioner,
+# the only feasible path is this PV, so its zone affinity is honoured.
+resource "kubernetes_storage_class_v1" "static" {
+  count = var.create_storage_class ? 1 : 0
+
+  metadata {
+    name = var.storage_class_name
+    labels = merge(var.labels, {
+      "app.kubernetes.io/managed-by" = "terraform"
+    })
+  }
+
+  storage_provisioner = "kubernetes.io/no-provisioner"
+  volume_binding_mode = "WaitForFirstConsumer"
+  reclaim_policy      = "Retain"
+}
+
 resource "kubernetes_persistent_volume_v1" "this" {
   for_each = var.volumes
 
@@ -41,7 +65,7 @@ resource "kubernetes_persistent_volume_v1" "this" {
     }
     access_modes                     = ["ReadWriteOnce"]
     persistent_volume_reclaim_policy = "Retain"
-    storage_class_name               = each.value.storage_class_name
+    storage_class_name               = coalesce(each.value.storage_class_name, var.storage_class_name)
     volume_mode                      = "Filesystem"
 
     claim_ref {
